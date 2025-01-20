@@ -8,6 +8,6 @@ RUN go mod download
 
 copy . .
 
-RUN go build -o management-svc ./app/web/main.go
+RUN go build -o management-svc .
 
 CMD ["./management-svc"]
