@@ -29,6 +29,8 @@ func (c *RouteConfig) SetupAuthRoute() {
 		middleware.CORSConfig{
 			AllowOrigins: []string{"*"},
 		}))
+
 	api.Use(c.Middleware.DevMode())
 	api.GET("/suggestion", c.SuggestionHandler.List)
+	api.POST("/suggestion", c.SuggestionHandler.Create)
 }

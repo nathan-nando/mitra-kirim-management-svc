@@ -1,5 +1,6 @@
+
 CREATE TABLE suggestion(
-    ID int primary key ,
+    ID varchar(40) primary key ,
     NAME varchar(255),
     EMAIL varchar(255),
     MESSAGE text,

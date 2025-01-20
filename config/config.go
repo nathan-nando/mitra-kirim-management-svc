@@ -23,6 +23,8 @@ type Config struct {
 	JwtTokenExp        int    `envconfig:"JWT_TOKEN_EXPIRATION" required:"true"`
 	JwtRefreshTokenExp string `envconfig:"JWT_REFRESH_TOKEN_EXPIRATION" required:"true"`
 	JwtEncKey          string `envconfig:"JWT_ENC_KEY" required:"true"`
+
+	RedisPort string `envconfig:"REDIS_PORT" required:"true"`
 }
 
 func LoadConfig() (*Config, error) {

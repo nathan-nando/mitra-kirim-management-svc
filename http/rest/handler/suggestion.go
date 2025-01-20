@@ -3,7 +3,9 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
+	"mitra-kirim-be-mgmt/internal/suggestion/model"
 	"mitra-kirim-be-mgmt/internal/suggestion/service"
+	"mitra-kirim-be-mgmt/pkg/response"
 	"net/http"
 )
 
@@ -21,6 +23,25 @@ func NewSuggestionHandler(svc *service.Suggestion, log *logrus.Logger) *Suggesti
 
 func (h *SuggestionHandler) List(c echo.Context) error {
 	res, err := h.Svc.Get(c.Request().Context())
+	if err != nil {
+		h.Log.Error(err)
+	}
+	return c.JSON(http.StatusOK, res)
+}
+
+func (h *SuggestionHandler) Create(c echo.Context) error {
+	var req model.SuggestionCreate
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Error("failed to parse request body")
+		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
+			Success:   false,
+			Message:   "TEST",
+			RequestID: "TEST",
+			Internal:  err,
+		})
+	}
+
+	res, err := h.Svc.Create(c.Request().Context(), &req)
 	if err != nil {
 		h.Log.Error(err)
 	}

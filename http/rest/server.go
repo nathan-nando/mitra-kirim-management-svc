@@ -26,11 +26,13 @@ func New() (*Server, error) {
 	logger := NewLogger()
 	db := config.NewDatabase(cfg, logger)
 	app := echo.New()
+	publisher := config.NewRedisPublisher(cfg, logger)
 
 	config.BuildInternal(&config.AppConfig{
-		Db:  db,
-		App: app,
-		Log: logger,
+		Db:        db,
+		App:       app,
+		Log:       logger,
+		Publisher: publisher.Client,
 	})
 
 	s := Server{

@@ -3,7 +3,7 @@ package model
 import "time"
 
 type Suggestion struct {
-	ID          int        `gorm:"column:id;primaryKey" json:"id"`
+	ID          string     `gorm:"column:id;primaryKey" json:"id"`
 	Name        string     `gorm:"column:name" json:"name" json:"name"`
 	Email       string     `gorm:"column:email" json:"email"`
 	Message     string     `gorm:"column:message" json:"message"`
