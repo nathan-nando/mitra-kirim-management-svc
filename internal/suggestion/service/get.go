@@ -6,7 +6,7 @@ import (
 )
 
 func (s *Suggestion) Get(ctx context.Context) ([]model.Suggestion, error) {
-	todo, err := s.repo.FindAll()
+	todo, err := s.Repo.FindAll()
 
 	if err != nil {
 		return []model.Suggestion{}, err

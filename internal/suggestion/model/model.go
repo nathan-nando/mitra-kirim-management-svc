@@ -7,6 +7,7 @@ type Suggestion struct {
 	Name        string     `gorm:"column:name" json:"name" json:"name"`
 	Email       string     `gorm:"column:email" json:"email"`
 	Message     string     `gorm:"column:message" json:"message"`
+	Reply       string     `gorm:"column:reply" json:"reply"`
 	HasReplied  int8       `gorm:"column:has_replied" json:"hasReplied"`
 	CreatedDate time.Time  `gorm:"column:created_date" json:"createdDate"`
 	CreatedBy   string     `gorm:"column:created_by" json:"createdBy"`

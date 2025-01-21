@@ -23,16 +23,20 @@ func New() (*Server, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	logger := NewLogger()
 	db := config.NewDatabase(cfg, logger)
-	app := echo.New()
 	publisher := config.NewRedisPublisher(cfg, logger)
+	cache := config.NewRedisCache(cfg, logger)
+	app := echo.New()
 
 	config.BuildInternal(&config.AppConfig{
 		Db:        db,
 		App:       app,
 		Log:       logger,
-		Publisher: publisher.Client,
+		Publisher: publisher,
+		Cache:     cache,
+		Config:    cfg,
 	})
 
 	s := Server{

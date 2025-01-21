@@ -26,7 +26,7 @@ func (h *SuggestionHandler) List(c echo.Context) error {
 	if err != nil {
 		h.Log.Error(err)
 	}
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, response.SuccessOK(c, res))
 }
 
 func (h *SuggestionHandler) Create(c echo.Context) error {

@@ -12,7 +12,7 @@ type Suggestion struct {
 }
 
 func NewSuggestion(db *gorm.DB) *Suggestion {
-	return &Suggestion{db}
+	return &Suggestion{Db: db}
 }
 
 func (r *Suggestion) FindAll() ([]model.Suggestion, error) {

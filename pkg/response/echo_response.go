@@ -8,10 +8,10 @@ import (
 
 // Response struct
 type Response struct {
-	RequestID    string      `json:"requestId" example:"request_id"`
 	Success      bool        `json:"success" example:"true"`
 	Message      string      `json:"message" example:"success"`
 	ResponseTime int64       `json:"responseTime" example:"100000"`
+	RequestID    string      `json:"requestId" example:"requestId"`
 	Data         interface{} `json:"data"`
 }
 

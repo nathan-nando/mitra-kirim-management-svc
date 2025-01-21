@@ -1,17 +1,17 @@
 package service
 
 import (
-	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
+	"mitra-kirim-be-mgmt/internal/gateways/publisher/service"
 	"mitra-kirim-be-mgmt/internal/suggestion/repository"
 )
 
 type Suggestion struct {
-	repo      *repository.Suggestion
-	publisher *redis.Client
-	logger    *logrus.Logger
+	Repo      *repository.Suggestion
+	Logger    *logrus.Logger
+	Publisher *service.Publisher
 }
 
-func NewService(repo *repository.Suggestion, publisher *redis.Client, logger *logrus.Logger) *Suggestion {
-	return &Suggestion{repo, publisher, logger}
+func NewSuggestion(repo *repository.Suggestion, logger *logrus.Logger, publisher *service.Publisher) *Suggestion {
+	return &Suggestion{repo, logger, publisher}
 }
