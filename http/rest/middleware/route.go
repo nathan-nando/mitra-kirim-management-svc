@@ -33,4 +33,5 @@ func (c *RouteConfig) SetupAuthRoute() {
 	api.Use(c.Middleware.DevMode())
 	api.GET("/suggestion", c.SuggestionHandler.List)
 	api.POST("/suggestion", c.SuggestionHandler.Create)
+	api.POST("/suggestion/reply", c.SuggestionHandler.ReplyEmail)
 }

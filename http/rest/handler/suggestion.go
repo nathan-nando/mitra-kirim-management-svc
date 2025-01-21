@@ -41,7 +41,26 @@ func (h *SuggestionHandler) Create(c echo.Context) error {
 		})
 	}
 
-	res, err := h.Svc.Create(c.Request().Context(), &req)
+	res, err := h.Svc.Create(&req)
+	if err != nil {
+		h.Log.Error(err)
+	}
+	return c.JSON(http.StatusOK, res)
+}
+
+func (h *SuggestionHandler) ReplyEmail(c echo.Context) error {
+	var req model.SuggestionReply
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Error("failed to parse request body")
+		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
+			Success:   false,
+			Message:   "TEST",
+			RequestID: "TEST",
+			Internal:  err,
+		})
+	}
+
+	res, err := h.Svc.ReplyEmail(&req)
 	if err != nil {
 		h.Log.Error(err)
 	}

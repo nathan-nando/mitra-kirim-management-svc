@@ -27,6 +27,7 @@ func BuildInternal(appCfg *AppConfig) {
 	publisher := servicePub.NewPublisher(appCfg.Publisher.Client, appCfg.Log, appCfg.Config.RedisMaxRetry)
 
 	suggestionRepo := repository.NewSuggestion(appCfg.Db)
+
 	suggestionSvc := service.NewSuggestion(suggestionRepo, appCfg.Log, publisher)
 
 	suggestionHandler := handler.NewSuggestionHandler(suggestionSvc, appCfg.Log)

@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func (s *Suggestion) Create(ctx context.Context, request *model.SuggestionCreate) (string, error) {
+func (s *Suggestion) Create(request *model.SuggestionCreate) (string, error) {
 	suggestion, err := s.Repo.Create(request)
 	if err != nil {
 		return "", err
