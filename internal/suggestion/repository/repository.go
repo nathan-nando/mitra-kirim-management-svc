@@ -48,21 +48,3 @@ func (r *Suggestion) Create(suggestion *model.SuggestionCreate) (model.Suggestio
 	}
 	return result, nil
 }
-
-func (r *Suggestion) Create(suggestion *model.SuggestionCreate) (model.Suggestion, error) {
-	var result model.Suggestion
-	if err := r.Db.Create(
-		&model.Suggestion{
-			ID:          uuid.New().String(),
-			Name:        suggestion.Name,
-			Email:       suggestion.Email,
-			Message:     suggestion.Message,
-			HasReplied:  0,
-			CreatedDate: time.Time{},
-			CreatedBy:   "SYSTEM",
-		},
-	).Error; err != nil {
-		return model.Suggestion{}, err
-	}
-	return result, nil
-}

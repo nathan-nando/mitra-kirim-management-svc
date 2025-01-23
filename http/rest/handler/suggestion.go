@@ -25,6 +25,12 @@ func (h *SuggestionHandler) List(c echo.Context) error {
 	res, err := h.Svc.Get(c.Request().Context())
 	if err != nil {
 		h.Log.Error(err)
+		return c.JSON(http.StatusInternalServerError, response.ErrorResponse{
+			Success:   false,
+			Message:   "TEST",
+			RequestID: "TEST",
+			Internal:  err,
+		})
 	}
 	return c.JSON(http.StatusOK, response.SuccessOK(c, res))
 }
@@ -60,9 +66,9 @@ func (h *SuggestionHandler) ReplyEmail(c echo.Context) error {
 		})
 	}
 
-	res, err := h.Svc.ReplyEmail(&req)
-	if err != nil {
-		h.Log.Error(err)
-	}
-	return c.JSON(http.StatusOK, res)
+	//res, err := h.Svc.ReplyEmail(&req)
+	//if err != nil {
+	//	h.Log.Error(err)
+	//}
+	return c.JSON(http.StatusOK, "OK")
 }

@@ -1,6 +1,8 @@
-package user
+package model
 
-import "time"
+import (
+	"time"
+)
 
 type User struct {
 	ID          int        `db:"id"`
@@ -15,4 +17,8 @@ type User struct {
 	CreatedBy   string     `db:"created_by"`
 	UpdatedDate *time.Time `db:"created_date"`
 	UpdatedBy   string     `db:"created_by"`
+}
+
+func (a *User) TableName() string {
+	return "users"
 }
