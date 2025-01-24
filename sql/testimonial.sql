@@ -4,7 +4,7 @@ CREATE TABLE testimonial
     NAME         varchar(255),
     DESCRIPTION  varchar(255),
     IMG          text,
-    IS_FAVORITE  int,
+    SORT  int,
     CREATED_DATE timestamp,
     CREATED_BY   varchar(255),
     UPDATED_DATE timestamp,

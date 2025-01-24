@@ -32,7 +32,11 @@ func BuildInternal(appCfg *AppConfig) {
 	suggestionSvc := service.NewSuggestion(suggestionRepo, appCfg.Log, publisher)
 
 	userHandler := handler.NewUserHandler(userSvc, appCfg.Log)
+	dashboardHandler := handler.NewDashboardHandler()
+	locationHandler := handler.NewLocationHandler()
+	testimonialHandler := handler.NewTestimonialHandler()
 	suggestionHandler := handler.NewSuggestionHandler(suggestionSvc, appCfg.Log)
+	settingsHandler := handler.NewSettingsHandler()
 
 	appMiddleware := middleware.NewCustomMiddleware(appCfg.Log)
 
