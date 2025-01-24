@@ -1,11 +1,15 @@
 package service
 
-import "mitra-kirim-be-mgmt/internal/location/repository"
+import (
+	"github.com/sirupsen/logrus"
+	"mitra-kirim-be-mgmt/internal/location/repository"
+)
 
 type Location struct {
 	Repo *repository.Location
+	Log  *logrus.Logger
 }
 
-func NewService(repo *repository.Location) *Location {
-	return &Location{Repo: repo}
+func NewService(repo *repository.Location, Log *logrus.Logger) *Location {
+	return &Location{Repo: repo, Log: Log}
 }
