@@ -40,7 +40,7 @@ func (r *Suggestion) Create(suggestion *model.SuggestionCreate) (model.Suggestio
 			Email:       suggestion.Email,
 			Message:     suggestion.Message,
 			HasReplied:  0,
-			CreatedDate: time.Time{},
+			CreatedDate: time.Now(),
 			CreatedBy:   "SYSTEM",
 		},
 	).Error; err != nil {

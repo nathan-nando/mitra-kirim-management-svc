@@ -32,7 +32,7 @@ func (h *SuggestionHandler) List(c echo.Context) error {
 			Internal:  err,
 		})
 	}
-	return c.JSON(http.StatusOK, response.SuccessOK(c, res))
+	return response.SuccessOK(c, res)
 }
 
 func (h *SuggestionHandler) Create(c echo.Context) error {
