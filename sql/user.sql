@@ -14,6 +14,4 @@ CREATE TABLE USERS
     UPDATED_BY   varchar(255)
 );
 
-CREATE SEQUENCE seq_user START 1;
-
 INSERT INTO USERS(name, email, title, gender, phone, status, img) VALUES( 'Admin MItra Kirim 2', 'admin@mkhoreca.co.id', 'Staff Operational', 'pria', '0813291212', 1, 'user.jpg');
