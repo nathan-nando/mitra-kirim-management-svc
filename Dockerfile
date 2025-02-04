@@ -1,12 +1,14 @@
-FROM golang:1.20-alpine
+FROM golang:1.22-alpine
 
 WORKDIR /app
+
+COPY .env .
 
 COPY go.mod go.sum ./
 
 RUN go mod download
 
-copy . .
+COPY . .
 
 RUN go build -o management-svc .
 

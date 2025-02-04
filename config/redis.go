@@ -3,6 +3,7 @@ package config
 import (
 	"context"
 	"fmt"
+
 	"github.com/redis/go-redis/v9"
 	"github.com/sirupsen/logrus"
 )
@@ -13,7 +14,7 @@ type RedisConfig struct {
 
 func NewRedisPublisher(cfg *Config, log *logrus.Logger) *RedisConfig {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("localhost:%s", cfg.RedisPort),
+		Addr:     fmt.Sprintf("redis:%s", cfg.RedisPort),
 		Password: "",
 		DB:       0,
 	})
@@ -30,7 +31,7 @@ func NewRedisPublisher(cfg *Config, log *logrus.Logger) *RedisConfig {
 
 func NewRedisCache(cfg *Config, log *logrus.Logger) *RedisConfig {
 	rdb := redis.NewClient(&redis.Options{
-		Addr:     fmt.Sprintf("localhost:%s", cfg.RedisPort),
+		Addr:     fmt.Sprintf("redis:%s", cfg.RedisPort),
 		Password: "",
 		DB:       1,
 	})

@@ -3,8 +3,6 @@ package config
 import (
 	"github.com/joho/godotenv"
 	"github.com/kelseyhightower/envconfig"
-	"os"
-	"regexp"
 )
 
 type Config struct {
@@ -31,10 +29,10 @@ type Config struct {
 }
 
 func LoadConfig() (*Config, error) {
-	re := regexp.MustCompile(`^(.*` + "mitra-kirim-be-mgmt" + `)`)
-	cwd, _ := os.Getwd()
-	rootPath := re.Find([]byte(cwd))
-	_ = godotenv.Load(string(rootPath) + `/.env`)
+	// re := regexp.MustCompile(`^(.*` + "mitra-kirim-management-svc" + `)`)
+	// cwd, _ := os.Getwd()
+	// rootPath := re.Find([]byte(cwd))
+	_ = godotenv.Load(".env")
 	cnf := Config{}
 	err := envconfig.Process("", &cnf)
 	return &cnf, err
