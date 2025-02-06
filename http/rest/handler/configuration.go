@@ -84,7 +84,7 @@ func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 }
 func (h *ConfigurationHandler) UpdateSocial(c echo.Context) error {
 	var req model.UpdateSocialRequest
-	if err := c.Bind(req); err != nil {
+	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
 		return response.ErrorBadRequest(c, err, "Validation error")
 	}
