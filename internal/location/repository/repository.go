@@ -11,7 +11,7 @@ type Location struct {
 	Db *gorm.DB
 }
 
-func NewRepository(db *gorm.DB) *Location {
+func NewLocation(db *gorm.DB) *Location {
 	return &Location{Db: db}
 }
 

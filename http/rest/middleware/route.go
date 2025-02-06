@@ -10,11 +10,12 @@ import (
 const v1 = "/api/v1"
 
 type RouteConfig struct {
-	App               *echo.Echo
-	SuggestionHandler *handler.SuggestionHandler
-	LocationHandler   *handler.LocationHandler
-	UserHandler       *handler.UserHandler
-	Middleware        *CustomMiddleware
+	App                  *echo.Echo
+	SuggestionHandler    *handler.SuggestionHandler
+	LocationHandler      *handler.LocationHandler
+	ConfigurationHandler *handler.ConfigurationHandler
+	UserHandler          *handler.UserHandler
+	Middleware           *CustomMiddleware
 }
 
 func (r *RouteConfig) Setup() {
@@ -33,22 +34,28 @@ func (r *RouteConfig) SetupGuestRoute() {
 	api.POST("/auth/logout", handler.Health)
 }
 
-func (c *RouteConfig) SetupAuthRoute() {
-	api := c.App.Group(v1)
+func (r *RouteConfig) SetupAuthRoute() {
+	api := r.App.Group(v1)
 	api.Use(middleware.CORSWithConfig(
 		middleware.CORSConfig{
 			AllowOrigins: []string{"*"},
 		}))
 
-	api.Use(c.Middleware.DevMode())
+	api.Use(r.Middleware.DevMode())
 	//api.Use(c.Middleware.AuthMiddleware())
 
-	api.GET("/suggestion", c.SuggestionHandler.List)
-	api.POST("/suggestion", c.SuggestionHandler.Create)
-	api.POST("/suggestion/reply", c.SuggestionHandler.ReplyEmail)
+	api.GET("/suggestion", r.SuggestionHandler.List)
+	api.POST("/suggestion", r.SuggestionHandler.Create)
+	api.POST("/suggestion/reply", r.SuggestionHandler.ReplyEmail)
 
-	api.GET("/location", c.LocationHandler.List)
-	api.POST("/location", c.LocationHandler.Create)
-	api.PATCH("/location", c.LocationHandler.Update)
-	api.DELETE("/location/:id", c.LocationHandler.Delete)
+	api.GET("/location", r.LocationHandler.List)
+	api.POST("/location", r.LocationHandler.Create)
+	api.PATCH("/location", r.LocationHandler.Update)
+	api.DELETE("/location/:id", r.LocationHandler.Delete)
+
+	api.POST("/configuration/type", r.ConfigurationHandler.ListByTypes)
+	api.PATCH("/configuration/app", r.ConfigurationHandler.UpdateApp)
+	api.PATCH("/configuration/appLogo", r.ConfigurationHandler.UpdateAppLogo)
+	api.PATCH("/configuration/social", r.ConfigurationHandler.UpdateSocial)
+	api.PATCH("/configuration/toko", r.ConfigurationHandler.UpdateToko)
 }

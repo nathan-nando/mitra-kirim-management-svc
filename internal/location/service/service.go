@@ -10,6 +10,6 @@ type Location struct {
 	Log  *logrus.Logger
 }
 
-func NewService(repo *repository.Location, Log *logrus.Logger) *Location {
+func NewLocation(repo *repository.Location, Log *logrus.Logger) *Location {
 	return &Location{Repo: repo, Log: Log}
 }
