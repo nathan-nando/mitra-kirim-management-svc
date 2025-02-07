@@ -46,3 +46,7 @@ func ErrorNotFound(c echo.Context, data interface{}, msg ...string) error {
 func ErrorForbidden(c echo.Context, data interface{}, msg ...string) error {
 	return errorEcho(c, http.StatusForbidden, data, msg...)
 }
+
+func ErrorUnauthorized(c echo.Context, data interface{}, msg ...string) error {
+	return errorEcho(c, http.StatusUnauthorized, data, msg...)
+}

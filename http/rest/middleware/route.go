@@ -31,7 +31,7 @@ func (r *RouteConfig) SetupGuestRoute() {
 	api.Use(r.Middleware.DevMode())
 	api.POST("/auth/login", r.UserHandler.Login)
 	api.POST("/auth/refresh", r.UserHandler.Refresh)
-	api.POST("/auth/logout", handler.Health)
+	api.POST("/auth/register", r.UserHandler.Register)
 }
 
 func (r *RouteConfig) SetupAuthRoute() {
@@ -42,8 +42,7 @@ func (r *RouteConfig) SetupAuthRoute() {
 		}))
 
 	api.Use(r.Middleware.DevMode())
-	//api.Use(c.Middleware.AuthMiddleware())
-
+	api.Use(r.Middleware.AuthMiddleware())
 	api.GET("/suggestion", r.SuggestionHandler.List)
 	api.POST("/suggestion", r.SuggestionHandler.Create)
 	api.POST("/suggestion/reply", r.SuggestionHandler.ReplyEmail)

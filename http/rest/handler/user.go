@@ -1,7 +1,6 @@
 package handler
 
 import (
-	"github.com/golang-jwt/jwt/v5"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"mitra-kirim-be-mgmt/internal/user/model"
@@ -21,68 +20,50 @@ func NewUserHandler(svc *service.User, log *logrus.Logger) *UserHandler {
 
 func (h *UserHandler) Login(c echo.Context) error {
 	var req model.LoginRequest
+
+	username := c.FormValue("username")
+	password := c.FormValue("password")
+
+	if username == "" || password == "" {
+		return response.ErrorBadRequest(c, nil, "Username or password is required")
+	}
+
+	req.Username = username
+	req.Password = password
+
+	h.Log.Info("Paylaod : ", req)
+
+	login, err := h.Svc.Login(&req)
+	if err != nil {
+		return response.ErrorUnauthorized(c, err, "Invalid username or password")
+	}
+	return response.SuccessOK(c, login)
+}
+
+func (h *UserHandler) Register(c echo.Context) error {
+	var req model.RegisterRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-			Internal:  err,
-		})
+		return response.ErrorBadRequest(c, err, "Username or password is required")
 	}
 
-	if req.Username != "admin" || req.Password != "password" {
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid credentials"})
-	}
-
-	// Generate tokens
-	accessToken, err := h.Svc.GenerateAccessToken("123", "admin@example.com")
+	login, err := h.Svc.Register(&req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to generate access token"})
+		return response.ErrorUnauthorized(c, err, "Register is failed")
 	}
-
-	refreshToken, err := h.Svc.GenerateRefreshToken("123", "admin@example.com")
-	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to generate refresh token"})
-	}
-
-	return c.JSON(http.StatusOK, map[string]string{
-		"accessToken":  accessToken,
-		"refreshToken": refreshToken,
-	})
-
+	return response.SuccessOK(c, login)
 }
 
 func (h *UserHandler) Refresh(c echo.Context) error {
 	var req model.RefreshTokenRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-			Internal:  err,
-		})
+		return response.ErrorBadRequest(c, err, "Bad Request")
 	}
 
-	claims := &model.Claims{}
-	token, err := jwt.ParseWithClaims(req.RefreshToken, claims, func(token *jwt.Token) (interface{}, error) {
-		return service.JwtKey, nil
-	})
-
-	if !token.Valid {
-		h.Log.Println("Token is not valid")
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid refresh token"})
-	}
-
-	if err != nil || !token.Valid || claims.TokenType != "refresh" {
-		return c.JSON(http.StatusUnauthorized, map[string]string{"error": "Invalid"})
-	}
-
-	// Generate a new access token
-	accessToken, err := h.Svc.GenerateAccessToken(claims.UserID, claims.Email)
+	accessToken, err := h.Svc.Refresh(&req)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, map[string]string{"error": "Failed to generate access token"})
+		return response.ErrorUnauthorized(c, err, "Invalid refresh token")
 	}
 
 	return c.JSON(http.StatusOK, map[string]string{

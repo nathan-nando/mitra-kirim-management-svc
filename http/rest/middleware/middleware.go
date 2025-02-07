@@ -8,11 +8,12 @@ import (
 )
 
 type CustomMiddleware struct {
-	Log *logrus.Logger
+	Log    *logrus.Logger
+	JwtKey string
 }
 
-func NewCustomMiddleware(log *logrus.Logger) *CustomMiddleware {
-	return &CustomMiddleware{Log: log}
+func NewCustomMiddleware(log *logrus.Logger, jwtKey string) *CustomMiddleware {
+	return &CustomMiddleware{Log: log, JwtKey: jwtKey}
 }
 
 func (m *CustomMiddleware) DevMode() echo.MiddlewareFunc {

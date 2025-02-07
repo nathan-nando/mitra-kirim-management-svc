@@ -5,17 +5,16 @@ import (
 	echojwt "github.com/labstack/echo-jwt/v4"
 	"github.com/labstack/echo/v4"
 	"mitra-kirim-be-mgmt/internal/user/model"
-	"mitra-kirim-be-mgmt/internal/user/service"
 	"net/http"
 )
 
 func (m *CustomMiddleware) AuthMiddleware() echo.MiddlewareFunc {
 	return echojwt.WithConfig(echojwt.Config{
-		SigningKey: service.JwtKey,
+		SigningKey: []byte(m.JwtKey),
 		ParseTokenFunc: func(c echo.Context, auth string) (interface{}, error) {
 			claims := &model.Claims{}
 			token, err := jwt.ParseWithClaims(auth, claims, func(token *jwt.Token) (interface{}, error) {
-				return service.JwtKey, nil
+				return []byte(m.JwtKey), nil
 			})
 			m.Log.Infof("TYPE: %v", claims.TokenType)
 			if err != nil {

@@ -14,6 +14,7 @@ import (
 	locationService "mitra-kirim-be-mgmt/internal/location/service"
 	"mitra-kirim-be-mgmt/internal/suggestion/repository"
 	"mitra-kirim-be-mgmt/internal/suggestion/service"
+	userRepository "mitra-kirim-be-mgmt/internal/user/repository"
 	userService "mitra-kirim-be-mgmt/internal/user/service"
 	"os"
 
@@ -42,12 +43,13 @@ func BuildInternal(appCfg *AppConfig) {
 	fileUploaderRepo := fileUploaderRepository.NewFileUploader(homeDir, appCfg.Log)
 	locationRepo := locationRepository.NewLocation(appCfg.Db)
 	configRepo := configurationRepository.NewConfiguration(appCfg.Db)
+	userRepo := userRepository.NewUser(appCfg.Db)
 
-	userSvc := userService.NewUser(appCfg.Db)
 	suggestionSvc := service.NewSuggestion(suggestionRepo, appCfg.Log, publisher)
 	locationSvc := locationService.NewLocation(locationRepo, appCfg.Log)
 	fileUploaderSvc := fileUploaderService.NewFileUploader(fileUploaderRepo, appCfg.Log)
 	configSvc := configurationService.NewConfiguration(configRepo, fileUploaderSvc, appCfg.Log)
+	userSvc := userService.NewUser(appCfg.Db, userRepo, appCfg.Config.JwtSigningKey, appCfg.Config.JwtTokenExp, appCfg.Config.JwtRefreshTokenExp)
 
 	userHandler := handler.NewUserHandler(userSvc, appCfg.Log)
 	//dashboardHandler := handler.NewDashboardHandler()
@@ -57,7 +59,7 @@ func BuildInternal(appCfg *AppConfig) {
 	configurationHandler := handler.NewConfigurationHandler(configSvc, fileUploaderSvc, appCfg.Log)
 	//settingsHandler := handler.NewSettingsHandler()
 
-	appMiddleware := middleware.NewCustomMiddleware(appCfg.Log)
+	appMiddleware := middleware.NewCustomMiddleware(appCfg.Log, appCfg.Config.JwtSigningKey)
 
 	routeConfig := middleware.RouteConfig{
 		App:                  appCfg.App,

@@ -5,20 +5,20 @@ import (
 )
 
 type User struct {
-	ID          int        `gorm:"column:id;primaryKey" json:"id"`
+	ID          string     `gorm:"column:id;primaryKey" json:"id"`
 	Name        string     `gorm:"column:name"`
+	Username    string     `gorm:"column:username"`
 	Title       string     `gorm:"column:title"`
 	Email       string     `gorm:"column:email"`
 	Password    string     `gorm:"column:password"`
 	Phone       string     `gorm:"column:phone"`
-	Address     string     `gorm:"column:address"`
 	Gender      string     `gorm:"column:gender"`
 	Img         string     `gorm:"column:img"`
 	Status      int        `gorm:"column:status"`
-	CreatedDate time.Time  `gorm:"column:createdDate"`
-	CreatedBy   string     `gorm:"column:createdBy"`
-	UpdatedDate *time.Time `gorm:"column:updatedDate"`
-	UpdatedBy   string     `gorm:"column:updatedBy"`
+	CreatedDate time.Time  `gorm:"column:created_date"`
+	CreatedBy   string     `gorm:"column:created_by"`
+	UpdatedDate *time.Time `gorm:"column:updated_date"`
+	UpdatedBy   string     `gorm:"column:updated_by"`
 }
 
 func (a *User) TableName() string {

@@ -21,8 +21,7 @@ type Config struct {
 
 	JwtSigningKey      string `envconfig:"JWT_SIGNING_KEY" required:"true"`
 	JwtTokenExp        int    `envconfig:"JWT_TOKEN_EXPIRATION" required:"true"`
-	JwtRefreshTokenExp string `envconfig:"JWT_REFRESH_TOKEN_EXPIRATION" required:"true"`
-	JwtEncKey          string `envconfig:"JWT_ENC_KEY" required:"true"`
+	JwtRefreshTokenExp int    `envconfig:"JWT_REFRESH_TOKEN_EXPIRATION" required:"true"`
 
 	RedisHost     string `envconfig:"REDIS_HOST" required:"true"`
 	RedisPort     string `envconfig:"REDIS_PORT" required:"true"`
