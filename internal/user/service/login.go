@@ -21,13 +21,13 @@ func (s *User) Login(req *model.LoginRequest) (model.LoginResponse, error) {
 	}
 
 	accessTokenDuration := time.Duration(s.TokenExp) * time.Hour
-	accessToken, err := jwttoken.GenerateAccessToken(user.ID, user.Email, []byte(s.JwtKey), accessTokenDuration)
+	accessToken, err := jwttoken.GenerateAccessToken(user.ID, user.Username, []byte(s.JwtKey), accessTokenDuration)
 	if err != nil {
 		return response, err
 	}
 
 	refreshTokenDuration := time.Duration(s.RefreshTokenExp) * 24 * time.Hour
-	refreshToken, err := jwttoken.GenerateRefreshToken(user.ID, user.Email, []byte(s.JwtKey), refreshTokenDuration)
+	refreshToken, err := jwttoken.GenerateRefreshToken(user.ID, user.Username, []byte(s.JwtKey), refreshTokenDuration)
 	if err != nil {
 		return response, err
 	}

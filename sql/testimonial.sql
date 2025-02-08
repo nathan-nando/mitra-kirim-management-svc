@@ -2,13 +2,13 @@ drop table testimonial;
 
 CREATE TABLE testimonial
 (
-    ID           serial primary key ,
-    NAME         varchar(255),
-    DESCRIPTION  varchar(255),
+    ID           serial primary key,
+    NAME         varchar(50),
+    DESCRIPTION  varchar(100),
     IMG          text,
-    IS_CAROUSEL   int2,
-    CREATED_DATE timestamp,
-    CREATED_BY   varchar(255),
+    IS_CAROUSEL  int,
+    CREATED_DATE timestamp NOT null DEFAULT now(),
+    CREATED_BY   varchar(50),
     UPDATED_DATE timestamp,
-    UPDATED_BY   varchar(255)
+    UPDATED_BY   varchar(50)
 );

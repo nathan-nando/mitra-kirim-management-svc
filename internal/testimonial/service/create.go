@@ -5,7 +5,7 @@ import (
 	"mitra-kirim-be-mgmt/internal/testimonial/model"
 )
 
-func (s *Testimonial) Create(file *multipart.FileHeader, data *model.TestimonialCreate, userID string) (model.TestimonialResponse, error) {
+func (s *Testimonial) Create(file *multipart.FileHeader, data *model.TestimonialCreate, username string) (model.TestimonialResponse, error) {
 	var response model.TestimonialResponse
 
 	newFileName, err := s.FileUploader.UploadFile(file, "/mk-storage/testimonials/")
@@ -15,7 +15,7 @@ func (s *Testimonial) Create(file *multipart.FileHeader, data *model.Testimonial
 
 	data.Img = newFileName
 
-	res, err := s.Repository.Create(data, userID)
+	res, err := s.Repository.Create(data, username)
 	if err != nil {
 		return response, err
 	}

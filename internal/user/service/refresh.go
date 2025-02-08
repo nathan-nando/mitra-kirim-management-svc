@@ -22,7 +22,7 @@ func (s *User) Refresh(req *model.RefreshTokenRequest) (string, error) {
 	}
 
 	accessTokenDuration := time.Duration(s.TokenExp) * time.Hour
-	accessToken, err := jwt_token.GenerateAccessToken(claims.UserID, claims.Email, []byte(s.JwtKey), accessTokenDuration)
+	accessToken, err := jwt_token.GenerateAccessToken(claims.UserID, claims.Username, []byte(s.JwtKey), accessTokenDuration)
 	if err != nil {
 		return "", err
 	}

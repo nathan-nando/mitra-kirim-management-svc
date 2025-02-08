@@ -54,9 +54,40 @@ func (h *TestimonialHandler) Create(c echo.Context) error {
 		Img:         "",
 	}
 
-	userID := c.Get("userID").(string)
+	username := c.Get("username").(string)
 
-	res, err := h.Svc.Create(file, &req, userID)
+	res, err := h.Svc.Create(file, &req, username)
+
+	if err != nil {
+		return response.ErrorUnauthorized(c, err, "Server error")
+	}
+	return response.SuccessOK(c, res)
+}
+
+func (h *TestimonialHandler) UpdateSlide(c echo.Context) error {
+	var req model.TestimonialUpdateSlide
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Error("failed to parse request body")
+		return response.ErrorBadRequest(c, err, "failed to parse request body")
+	}
+
+	userID := c.Get("username").(string)
+
+	res, err := h.Svc.UpdateSlide(&req, userID)
+
+	if err != nil {
+		return response.ErrorUnauthorized(c, err, "Server error")
+	}
+	return response.SuccessOK(c, res)
+}
+
+func (h *TestimonialHandler) Delete(c echo.Context) error {
+	id := converter.GetQueryInt(c, "id", 0)
+	if id == 0 {
+		return response.ErrorBadRequest(c, "", "id is required")
+	}
+
+	res, err := h.Svc.Delete(id)
 
 	if err != nil {
 		return response.ErrorUnauthorized(c, err, "Server error")

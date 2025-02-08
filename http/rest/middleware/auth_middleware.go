@@ -17,7 +17,7 @@ func (m *CustomMiddleware) AuthMiddleware() echo.MiddlewareFunc {
 				return []byte(m.JwtKey), nil
 			})
 
-			c.Set("userID", claims.UserID)
+			c.Set("username", claims.Username)
 
 			if err != nil {
 				return nil, err

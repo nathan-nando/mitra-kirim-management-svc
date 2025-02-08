@@ -12,18 +12,18 @@ type ConfigJWT struct {
 	refreshTokenExp time.Duration
 }
 
-func GenerateAccessToken(userID, email string, jwtKey []byte, exp time.Duration) (string, error) {
-	return generateToken(userID, email, "access", exp, jwtKey)
+func GenerateAccessToken(userID, username string, jwtKey []byte, exp time.Duration) (string, error) {
+	return generateToken(userID, username, "access", exp, jwtKey)
 }
 
-func GenerateRefreshToken(userID, email string, jwtKey []byte, exp time.Duration) (string, error) {
-	return generateToken(userID, email, "refresh", exp, jwtKey)
+func GenerateRefreshToken(userID, username string, jwtKey []byte, exp time.Duration) (string, error) {
+	return generateToken(userID, username, "refresh", exp, jwtKey)
 }
 
-func generateToken(userID, email, tokenType string, expiration time.Duration, jwtKey []byte) (string, error) {
+func generateToken(userID, username, tokenType string, expiration time.Duration, jwtKey []byte) (string, error) {
 	claims := &model.Claims{
 		UserID:    userID,
-		Email:     email,
+		Username:  username,
 		TokenType: tokenType,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expiration)),
