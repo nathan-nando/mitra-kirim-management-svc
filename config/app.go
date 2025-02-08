@@ -56,7 +56,7 @@ func BuildInternal(appCfg *AppConfig) {
 	locationHandler := handler.NewLocationHandler(locationSvc, appCfg.Log)
 	//testimonialHandler := handler.NewTestimonialHandler()
 	suggestionHandler := handler.NewSuggestionHandler(suggestionSvc, appCfg.Log)
-	configurationHandler := handler.NewConfigurationHandler(configSvc, fileUploaderSvc, appCfg.Log)
+	configurationHandler := handler.NewConfigurationHandler(configSvc, locationSvc, appCfg.Log)
 	//settingsHandler := handler.NewSettingsHandler()
 
 	appMiddleware := middleware.NewCustomMiddleware(appCfg.Log, appCfg.Config.JwtSigningKey)

@@ -5,20 +5,22 @@ import (
 	"github.com/sirupsen/logrus"
 	"mitra-kirim-be-mgmt/internal/configuration/model"
 	"mitra-kirim-be-mgmt/internal/configuration/service"
-	fileUploaderSvc "mitra-kirim-be-mgmt/internal/file-uploader/service"
+	locationService "mitra-kirim-be-mgmt/internal/location/service"
 	"mitra-kirim-be-mgmt/pkg/response"
 	"net/http"
 )
 
 type ConfigurationHandler struct {
-	Svc *service.Configuration
-	Log *logrus.Logger
+	Svc    *service.Configuration
+	LocSvc *locationService.Location
+	Log    *logrus.Logger
 }
 
-func NewConfigurationHandler(svc *service.Configuration, fileSvc *fileUploaderSvc.FileUploader, log *logrus.Logger) *ConfigurationHandler {
+func NewConfigurationHandler(svc *service.Configuration, locSvc *locationService.Location, log *logrus.Logger) *ConfigurationHandler {
 	return &ConfigurationHandler{
-		Svc: svc,
-		Log: log,
+		Svc:    svc,
+		LocSvc: locSvc,
+		Log:    log,
 	}
 }
 
@@ -45,6 +47,28 @@ func (h *ConfigurationHandler) ListByTypes(c echo.Context) error {
 		})
 	}
 	return response.SuccessOK(c, res)
+}
+func (h *ConfigurationHandler) PublicConfig(c echo.Context) error {
+	var req []string
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Error("failed to parse request body")
+		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
+			Success:   false,
+			Message:   "TEST",
+			RequestID: "TEST",
+			Internal:  err,
+		})
+	}
+
+	config, err := h.Svc.GetByTypes(req)
+	if err != nil {
+		return response.ErrorInternal(c, err, "Failed to get public config")
+	}
+	loc, err := h.LocSvc.GetAll(0, 3)
+	return response.SuccessOK(c, map[string]interface{}{
+		"config":   config,
+		"location": loc,
+	})
 }
 
 func (h *ConfigurationHandler) UpdateApp(c echo.Context) error {
