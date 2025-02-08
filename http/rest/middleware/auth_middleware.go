@@ -16,7 +16,9 @@ func (m *CustomMiddleware) AuthMiddleware() echo.MiddlewareFunc {
 			token, err := jwt.ParseWithClaims(auth, claims, func(token *jwt.Token) (interface{}, error) {
 				return []byte(m.JwtKey), nil
 			})
-			m.Log.Infof("TYPE: %v", claims.TokenType)
+
+			c.Set("userID", claims.UserID)
+
 			if err != nil {
 				return nil, err
 			}

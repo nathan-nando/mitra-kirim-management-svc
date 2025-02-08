@@ -30,9 +30,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 
 	req.Username = username
 	req.Password = password
-
-	h.Log.Info("Paylaod : ", req)
-
+	
 	login, err := h.Svc.Login(&req)
 	if err != nil {
 		return response.ErrorUnauthorized(c, err, "Invalid username or password")

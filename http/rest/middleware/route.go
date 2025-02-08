@@ -14,6 +14,7 @@ type RouteConfig struct {
 	SuggestionHandler    *handler.SuggestionHandler
 	LocationHandler      *handler.LocationHandler
 	ConfigurationHandler *handler.ConfigurationHandler
+	TestimonialHandler   *handler.TestimonialHandler
 	UserHandler          *handler.UserHandler
 	Middleware           *CustomMiddleware
 }
@@ -59,4 +60,7 @@ func (r *RouteConfig) SetupAuthRoute() {
 	api.PATCH("/configuration/appLogo", r.ConfigurationHandler.UpdateAppLogo)
 	api.PATCH("/configuration/social", r.ConfigurationHandler.UpdateSocial)
 	api.PATCH("/configuration/toko", r.ConfigurationHandler.UpdateToko)
+
+	api.GET("/testimonial", r.TestimonialHandler.List)
+	api.POST("/testimonial", r.TestimonialHandler.Create)
 }

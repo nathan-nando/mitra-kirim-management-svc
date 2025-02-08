@@ -3,6 +3,7 @@ package response
 import (
 	"github.com/go-playground/validator/v10"
 	"net/http"
+	"time"
 
 	"github.com/labstack/echo/v4"
 )
@@ -41,13 +42,17 @@ func Success(c echo.Context, code int, data interface{}, msg ...string) error {
 		data = map[string]interface{}{}
 	}
 
-	requestID := "TEST"
+	var latency int64
+	if startTime, ok := c.Get("startTime").(time.Time); ok {
+		latency = time.Since(startTime).Milliseconds()
+	}
 
 	res := Response{
-		Success:   true,
-		Message:   responseMsg,
-		RequestID: requestID,
-		Data:      data,
+		Success:      true,
+		Message:      responseMsg,
+		ResponseTime: latency,
+		RequestID:    c.Get("requestId").(string),
+		Data:         data,
 	}
 	return c.JSON(code, res)
 }

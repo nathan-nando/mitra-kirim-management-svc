@@ -6,12 +6,6 @@ import (
 	"time"
 )
 
-var (
-	JwtKey          = []byte("n4thsecret") // Replace with a secure secret key
-	accessTokenExp  = 60 * time.Minute     // Access token expires in 15 minutes
-	refreshTokenExp = 3 * 24 * time.Hour   // Refresh token expires in 7 days
-)
-
 type ConfigJWT struct {
 	JwtKey          []byte
 	accessTokenExp  time.Duration

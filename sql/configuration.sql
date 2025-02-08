@@ -42,7 +42,7 @@ INSERT INTO configuration(key, type, value, form_type)
 values ('heroImg', 'LAYOUT_CONFIG', 'hero.jpg', 'text'),
        ('heroDesc', 'LAYOUT_CONFIG',
         'PT Mitra Kirim Horeca adalah perusahaan yang menyediakan berbagai kebutuhan untuk hotel, restoran, dan kafe. Kami menawarkan produk berkualitas tinggi, mulai dari peralatan dapur, perlengkapan meja, hingga bahan makanan dan minuman, yang dirancang untuk mendukung operasional bisnis hospitality Anda. \n\nDengan pelayanan yang cepat dan profesional, PT Mitra Kirim Horeca menjadi mitra terpercaya dalam memenuhi kebutuhan sektor horeca (hotel, restoran, dan kafe) dengan harga kompetitif dan kualitas terbaik.',
-        'text'),
+        'textarea'),
        ('services', 'LAYOUT_CONFIG', '[
   {
     "title": "Penyediaan Bahan Berkualitas",
