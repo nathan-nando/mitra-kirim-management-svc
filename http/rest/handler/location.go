@@ -23,27 +23,21 @@ func NewLocationHandler(service *service.Location, logger *logrus.Logger) *Locat
 }
 
 func (h *LocationHandler) List(c echo.Context) error {
-	res, err := h.Svc.GetAll(0, 100)
+	ctx := c.Request().Context()
+	res, err := h.Svc.GetAll(ctx, 0, 100)
 	if err != nil {
-		return c.JSON(http.StatusInternalServerError, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-		})
+		return response.ErrorInternal(c, err, "Server error")
 	}
 	return response.SuccessOK(c, res)
 }
 
 func (h *LocationHandler) Create(c echo.Context) error {
+	ctx := c.Request().Context()
+	
 	var req model.LocationRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-			Internal:  err,
-		})
+		return response.ErrorBadRequest(c, err, "Bad Request")
 	}
 
 	if err := c.Validate(&req); err != nil {
@@ -63,7 +57,7 @@ func (h *LocationHandler) Create(c echo.Context) error {
 
 	username := c.Get("username").(string)
 
-	res, err := h.Svc.Create(&req, username)
+	res, err := h.Svc.Create(ctx, &req, username)
 	if err != nil {
 		fmt.Println("err", err)
 		return c.JSON(http.StatusBadRequest, err)
@@ -75,12 +69,7 @@ func (h *LocationHandler) Update(c echo.Context) error {
 	var req model.LocationRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-			Internal:  err,
-		})
+		return response.ErrorBadRequest(c, err, "Bad Request")
 	}
 
 	if err := c.Validate(&req); err != nil {
@@ -111,11 +100,7 @@ func (h *LocationHandler) Update(c echo.Context) error {
 func (h *LocationHandler) Delete(c echo.Context) error {
 	id := c.Param("id")
 	if id == "" {
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "Id is required",
-			RequestID: "TEST",
-		})
+		return response.ErrorBadRequest(c, nil, "Id is required")
 	}
 
 	idNumber, err := strconv.Atoi(id)

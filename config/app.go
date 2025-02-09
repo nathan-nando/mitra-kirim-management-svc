@@ -20,7 +20,7 @@ import (
 	userService "mitra-kirim-be-mgmt/internal/user/service"
 	"os"
 
-	//serviceCache "mitra-kirim-be-mgmt/internal/gateways/cache/service"
+	serviceCache "mitra-kirim-be-mgmt/internal/gateways/cache/service"
 	pubService "mitra-kirim-be-mgmt/internal/gateways/publisher/service"
 )
 
@@ -35,10 +35,12 @@ type AppConfig struct {
 
 func BuildInternal(appCfg *AppConfig) {
 	homeDir, err := os.UserHomeDir()
+	cacheTime := appCfg.Config.CacheExpiration
+
 	if err != nil {
 		logrus.Error(err)
 	}
-	//newCache := serviceCache.NewCache(appCfg.Redis)
+	cache := serviceCache.NewCache(appCfg.Cache.Client)
 	publisher := pubService.NewPublisher(appCfg.Publisher.Client, appCfg.Log, appCfg.Config.RedisMaxRetry)
 
 	suggestionRepo := repository.NewSuggestion(appCfg.Db)
@@ -50,9 +52,9 @@ func BuildInternal(appCfg *AppConfig) {
 
 	fileUploaderSvc := fileUploaderService.NewFileUploader(fileUploaderRepo, appCfg.Log)
 	suggestionSvc := service.NewSuggestion(suggestionRepo, appCfg.Log, publisher)
-	testimonialSvc := testimonialService.NewTestimonial(testimonialRepo, fileUploaderSvc)
-	locationSvc := locationService.NewLocation(locationRepo, appCfg.Log)
-	configSvc := configurationService.NewConfiguration(configRepo, fileUploaderSvc, appCfg.Log)
+	testimonialSvc := testimonialService.NewTestimonial(testimonialRepo, fileUploaderSvc, appCfg.Log, cache, cacheTime)
+	locationSvc := locationService.NewLocation(locationRepo, appCfg.Log, cache, cacheTime)
+	configSvc := configurationService.NewConfiguration(configRepo, fileUploaderSvc, appCfg.Log, cache, cacheTime)
 	userSvc := userService.NewUser(appCfg.Db, fileUploaderSvc, userRepo, appCfg.Config.JwtSigningKey, appCfg.Config.JwtTokenExp, appCfg.Config.JwtRefreshTokenExp)
 
 	userHandler := handler.NewUserHandler(userSvc, appCfg.Log)
@@ -60,8 +62,7 @@ func BuildInternal(appCfg *AppConfig) {
 	locationHandler := handler.NewLocationHandler(locationSvc, appCfg.Log)
 	testimonialHandler := handler.NewTestimonialHandler(testimonialSvc, appCfg.Log)
 	suggestionHandler := handler.NewSuggestionHandler(suggestionSvc, appCfg.Log)
-	configurationHandler := handler.NewConfigurationHandler(configSvc, locationSvc, appCfg.Log)
-	//settingsHandler := handler.NewSettingsHandler()
+	configurationHandler := handler.NewConfigurationHandler(configSvc, testimonialSvc, locationSvc, appCfg.Log)
 
 	appMiddleware := middleware.NewCustomMiddleware(appCfg.Log, appCfg.Config.JwtSigningKey)
 

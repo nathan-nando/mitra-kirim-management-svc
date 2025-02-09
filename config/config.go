@@ -26,6 +26,8 @@ type Config struct {
 	RedisHost     string `envconfig:"REDIS_HOST" required:"true"`
 	RedisPort     string `envconfig:"REDIS_PORT" required:"true"`
 	RedisMaxRetry int    `envconfig:"REDIS_MAX_RETRY" required:"true"`
+
+	CacheExpiration int `envconfig:"CACHE_EXPIRATION" required:"true"`
 }
 
 func LoadConfig() (*Config, error) {

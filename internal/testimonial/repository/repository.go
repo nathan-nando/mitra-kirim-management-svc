@@ -20,6 +20,12 @@ func (a *Testimonial) GetAll(offset int, limit int) ([]model.Testimonial, error)
 	return testimonials, err
 }
 
+func (a *Testimonial) GetSlide(offset int, limit int) ([]model.Testimonial, error) {
+	var testimonials []model.Testimonial
+	err := a.Db.Where("is_carousel", 1).Find(&testimonials).Offset(offset).Limit(limit).Error
+	return testimonials, err
+}
+
 func (a *Testimonial) Create(req *model.TestimonialCreate, username string) (model.Testimonial, error) {
 	testimonial := model.Testimonial{
 		Name:        req.Name,

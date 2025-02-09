@@ -6,21 +6,24 @@ import (
 	"mitra-kirim-be-mgmt/internal/configuration/model"
 	"mitra-kirim-be-mgmt/internal/configuration/service"
 	locationService "mitra-kirim-be-mgmt/internal/location/service"
+	testimonialService "mitra-kirim-be-mgmt/internal/testimonial/service"
 	"mitra-kirim-be-mgmt/pkg/response"
 	"net/http"
 )
 
 type ConfigurationHandler struct {
-	Svc    *service.Configuration
-	LocSvc *locationService.Location
-	Log    *logrus.Logger
+	Svc            *service.Configuration
+	LocSvc         *locationService.Location
+	TestimonialSvc *testimonialService.Testimonial
+	Log            *logrus.Logger
 }
 
-func NewConfigurationHandler(svc *service.Configuration, locSvc *locationService.Location, log *logrus.Logger) *ConfigurationHandler {
+func NewConfigurationHandler(svc *service.Configuration, testimonialSvc *testimonialService.Testimonial, locSvc *locationService.Location, log *logrus.Logger) *ConfigurationHandler {
 	return &ConfigurationHandler{
-		Svc:    svc,
-		LocSvc: locSvc,
-		Log:    log,
+		Svc:            svc,
+		LocSvc:         locSvc,
+		TestimonialSvc: testimonialSvc,
+		Log:            log,
 	}
 }
 
@@ -28,15 +31,12 @@ func (h *ConfigurationHandler) ListByTypes(c echo.Context) error {
 	var req []string
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-			Internal:  err,
-		})
+		return response.ErrorBadRequest(c, err, "failed to parse request body")
 	}
 
-	res, err := h.Svc.GetByTypes(req)
+	ctx := c.Request().Context()
+
+	res, err := h.Svc.GetByTypes(ctx, req)
 	if err != nil {
 		h.Log.Error(err)
 		return c.JSON(http.StatusInternalServerError, response.ErrorResponse{
@@ -50,35 +50,44 @@ func (h *ConfigurationHandler) ListByTypes(c echo.Context) error {
 }
 func (h *ConfigurationHandler) PublicConfig(c echo.Context) error {
 	var req []string
+
+	ctx := c.Request().Context()
+
 	if err := c.Bind(&req); err != nil {
-		c.Logger().Error("failed to parse request body")
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "TEST",
-			RequestID: "TEST",
-			Internal:  err,
-		})
+		return response.ErrorBadRequest(c, err, "failed to parse request body")
 	}
 
-	config, err := h.Svc.GetByTypes(req)
+	configs, err := h.Svc.GetByTypes(ctx, req)
 	if err != nil {
 		return response.ErrorInternal(c, err, "Failed to get public config")
 	}
-	loc, err := h.LocSvc.GetAll(0, 3)
+
+	locations, err := h.LocSvc.GetAll(ctx, 20, 0)
+	if err != nil {
+		return response.ErrorInternal(c, err, "Failed to get location")
+	}
+
+	testimonials, err := h.TestimonialSvc.GetSlide(ctx, 100, 0)
+	if err != nil {
+		return response.ErrorInternal(c, err, "Failed to get testimonials")
+	}
+
 	return response.SuccessOK(c, map[string]interface{}{
-		"config":   config,
-		"location": loc,
+		"config":       configs,
+		"location":     locations,
+		"testimonials": testimonials,
 	})
 }
 
 func (h *ConfigurationHandler) UpdateApp(c echo.Context) error {
+	ctx := c.Request().Context()
 	var req model.UpdateAppRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
 		return response.ErrorBadRequest(c, err, "Validation error")
 	}
 
-	res, err := h.Svc.UpdateApp(req)
+	res, err := h.Svc.UpdateApp(ctx, req)
 	if err != nil {
 		h.Log.Error(err)
 		return response.ErrorInternal(c, err)
@@ -87,7 +96,7 @@ func (h *ConfigurationHandler) UpdateApp(c echo.Context) error {
 	return response.SuccessOK(c, res)
 }
 func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
-
+	ctx := c.Request().Context()
 	appLogo, err := c.FormFile("appLogo")
 	if err != nil || appLogo.Size == 0 {
 		h.Log.Error(err)
@@ -98,7 +107,7 @@ func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 		AppLogo: appLogo,
 	}
 
-	res, err := h.Svc.UpdateLogoApp(&req)
+	res, err := h.Svc.UpdateLogoApp(ctx, &req)
 	if err != nil {
 		h.Log.Error(err)
 		return response.ErrorInternal(c, err)
@@ -107,13 +116,15 @@ func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 	return response.SuccessOK(c, res)
 }
 func (h *ConfigurationHandler) UpdateSocial(c echo.Context) error {
+	ctx := c.Request().Context()
+
 	var req model.UpdateSocialRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
 		return response.ErrorBadRequest(c, err, "Validation error")
 	}
 
-	res, err := h.Svc.UpdateSocial(req)
+	res, err := h.Svc.UpdateSocial(ctx, req)
 
 	if err != nil {
 		h.Log.Error(err)
@@ -123,13 +134,15 @@ func (h *ConfigurationHandler) UpdateSocial(c echo.Context) error {
 	return response.SuccessOK(c, res)
 }
 func (h *ConfigurationHandler) UpdateToko(c echo.Context) error {
+	ctx := c.Request().Context()
+
 	var req model.UpdateTokoRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
 		return response.ErrorBadRequest(c, err, "Validation error")
 	}
 
-	res, err := h.Svc.UpdateToko(req)
+	res, err := h.Svc.UpdateToko(ctx, req)
 	if err != nil {
 		h.Log.Error(err)
 		return response.ErrorInternal(c, err)
