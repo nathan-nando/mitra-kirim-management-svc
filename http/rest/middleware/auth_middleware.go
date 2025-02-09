@@ -18,6 +18,7 @@ func (m *CustomMiddleware) AuthMiddleware() echo.MiddlewareFunc {
 			})
 
 			c.Set("username", claims.Username)
+			c.Set("userID", claims.UserID)
 
 			if err != nil {
 				return nil, err

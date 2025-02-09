@@ -53,7 +53,7 @@ func BuildInternal(appCfg *AppConfig) {
 	testimonialSvc := testimonialService.NewTestimonial(testimonialRepo, fileUploaderSvc)
 	locationSvc := locationService.NewLocation(locationRepo, appCfg.Log)
 	configSvc := configurationService.NewConfiguration(configRepo, fileUploaderSvc, appCfg.Log)
-	userSvc := userService.NewUser(appCfg.Db, userRepo, appCfg.Config.JwtSigningKey, appCfg.Config.JwtTokenExp, appCfg.Config.JwtRefreshTokenExp)
+	userSvc := userService.NewUser(appCfg.Db, fileUploaderSvc, userRepo, appCfg.Config.JwtSigningKey, appCfg.Config.JwtTokenExp, appCfg.Config.JwtRefreshTokenExp)
 
 	userHandler := handler.NewUserHandler(userSvc, appCfg.Log)
 	//dashboardHandler := handler.NewDashboardHandler()

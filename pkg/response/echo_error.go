@@ -3,6 +3,7 @@ package response
 import (
 	"github.com/labstack/echo/v4"
 	"net/http"
+	"time"
 )
 
 type ErrorResponse struct {
@@ -20,13 +21,17 @@ func errorEcho(c echo.Context, code int, error interface{}, msg ...string) error
 		error = map[string]interface{}{}
 	}
 
-	requestID := "TEST"
+	var latency int64
+	if startTime, ok := c.Get("startTime").(time.Time); ok {
+		latency = time.Since(startTime).Milliseconds()
+	}
 
 	res := Response{
-		Success:   true,
-		Message:   responseMsg,
-		RequestID: requestID,
-		Data:      error,
+		Success:      true,
+		Message:      responseMsg,
+		ResponseTime: latency,
+		RequestID:    c.Get("requestId").(string),
+		Data:         error,
 	}
 	return c.JSON(code, res)
 }

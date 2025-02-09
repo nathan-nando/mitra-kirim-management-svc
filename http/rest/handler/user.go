@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"github.com/go-playground/validator/v10"
 	"github.com/labstack/echo/v4"
+	"github.com/pkg/errors"
 	"github.com/sirupsen/logrus"
 	"mitra-kirim-be-mgmt/internal/user/model"
 	"mitra-kirim-be-mgmt/internal/user/service"
@@ -30,7 +32,7 @@ func (h *UserHandler) Login(c echo.Context) error {
 
 	req.Username = username
 	req.Password = password
-	
+
 	login, err := h.Svc.Login(&req)
 	if err != nil {
 		return response.ErrorUnauthorized(c, err, "Invalid username or password")
@@ -67,4 +69,65 @@ func (h *UserHandler) Refresh(c echo.Context) error {
 	return c.JSON(http.StatusOK, map[string]string{
 		"accessToken": accessToken,
 	})
+}
+
+func (h *UserHandler) Information(c echo.Context) error {
+	userID := c.Get("userID").(string)
+
+	user, err := h.Svc.GetInformation(userID)
+	if err != nil {
+		return response.ErrorBadRequest(c, err, "Failed")
+	}
+
+	return response.SuccessOK(c, user)
+}
+
+func (h *UserHandler) Update(c echo.Context) error {
+	var req model.UserUpdate
+
+	if err := c.Bind(&req); err != nil {
+		c.Logger().Error("failed to parse request body")
+		return response.ErrorBadRequest(c, err, "Bad Request")
+	}
+
+	if err := c.Validate(&req); err != nil {
+		var validationErrors validator.ValidationErrors
+		errors.As(err, &validationErrors)
+		var errorResponse []response.ValidationErrorResponse
+
+		for _, fieldError := range validationErrors {
+			errorResponse = append(errorResponse, response.ValidationErrorResponse{
+				Field:   fieldError.Field(),
+				Message: response.GetErrorMessage(fieldError),
+			})
+		}
+
+		return c.JSON(http.StatusBadRequest, errorResponse)
+	}
+
+	userID := c.Get("userID").(string)
+
+	updatedId, err := h.Svc.Update(&req, userID)
+	if err != nil {
+		return response.ErrorBadRequest(c, err, "Failed")
+	}
+
+	return response.SuccessCreatedReturnId(c, updatedId)
+}
+
+func (h *UserHandler) ChangeProfile(c echo.Context) error {
+	img, err := c.FormFile("img")
+	if err != nil || img.Size == 0 {
+		h.Log.Error(err)
+		return response.ErrorBadRequest(c, err, "Img not uploaded")
+	}
+
+	username := c.Get("username").(string)
+
+	ok, err := h.Svc.UpdatePicture(img, username)
+	if err != nil {
+		return response.ErrorBadRequest(c, err, "Failed")
+	}
+
+	return response.SuccessOK(c, ok)
 }

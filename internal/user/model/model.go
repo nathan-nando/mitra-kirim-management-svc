@@ -12,7 +12,6 @@ type User struct {
 	Email       string     `gorm:"column:email"`
 	Password    string     `gorm:"column:password"`
 	Phone       string     `gorm:"column:phone"`
-	Gender      string     `gorm:"column:gender"`
 	Img         string     `gorm:"column:img"`
 	Status      int        `gorm:"column:status"`
 	CreatedDate time.Time  `gorm:"column:created_date"`

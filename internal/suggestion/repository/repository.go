@@ -17,7 +17,7 @@ func NewSuggestion(db *gorm.DB) *Suggestion {
 
 func (r *Suggestion) FindAll() ([]model.Suggestion, error) {
 	var result []model.Suggestion
-	if err := r.Db.Find(&result).Error; err != nil {
+	if err := r.Db.Order("created_date desc").Find(&result).Error; err != nil {
 		return nil, err
 	}
 	return result, nil

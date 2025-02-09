@@ -18,19 +18,22 @@ func NewLocation(db *gorm.DB) *Location {
 func (r *Location) FindAll(limit int, offset int) ([]model.Location, error) {
 	var result []model.Location
 
-	if err := r.Db.Find(&result).Limit(limit).Offset(offset).Error; err != nil {
+	if err := r.Db.Order("created_date desc").Find(&result).Limit(limit).Offset(offset).Error; err != nil {
 		return nil, err
 	}
 
 	return result, nil
 }
 
-func (r *Location) Create(location *model.LocationRequest) (int, error) {
+func (r *Location) Create(location *model.LocationRequest, username string) (int, error) {
 	loc := &model.Location{
 		Name:        location.Name,
 		Description: location.Description,
 		IFrameLink:  location.IFrameLink,
-		CreatedBy:   "SYS",
+		Email:       location.Email,
+		Address:     location.Address,
+		Phone:       location.Whatsapp,
+		CreatedBy:   username,
 		CreatedDate: time.Now(),
 	}
 	if err := r.Db.Create(&loc).Error; err != nil {
@@ -39,13 +42,17 @@ func (r *Location) Create(location *model.LocationRequest) (int, error) {
 	return loc.ID, nil
 }
 
-func (r *Location) Update(location *model.LocationRequest) (int, error) {
+func (r *Location) Update(location *model.LocationRequest, username string) (int, error) {
+	now := time.Now()
 	loc := &model.Location{
 		Name:        location.Name,
 		Description: location.Description,
 		IFrameLink:  location.IFrameLink,
-		UpdatedBy:   "SYS",
-		UpdatedDate: time.Now(),
+		Email:       location.Email,
+		Address:     location.Address,
+		Phone:       location.Whatsapp,
+		UpdatedBy:   username,
+		UpdatedDate: &now,
 	}
 	if err := r.Db.Model(&loc).Where(location.Id).Updates(loc).Error; err != nil {
 		fmt.Println("ERR", err)

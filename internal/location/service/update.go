@@ -4,8 +4,8 @@ import (
 	"mitra-kirim-be-mgmt/internal/location/model"
 )
 
-func (s *Location) Update(request *model.LocationRequest) (int, error) {
-	id, err := s.Repo.Update(request)
+func (s *Location) Update(request *model.LocationRequest, username string) (int, error) {
+	id, err := s.Repo.Update(request, username)
 	if err != nil {
 		return id, err
 	}

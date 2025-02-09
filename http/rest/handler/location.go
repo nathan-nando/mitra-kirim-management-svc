@@ -61,7 +61,9 @@ func (h *LocationHandler) Create(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errorResponse)
 	}
 
-	res, err := h.Svc.Create(&req)
+	username := c.Get("username").(string)
+
+	res, err := h.Svc.Create(&req, username)
 	if err != nil {
 		fmt.Println("err", err)
 		return c.JSON(http.StatusBadRequest, err)
@@ -96,7 +98,9 @@ func (h *LocationHandler) Update(c echo.Context) error {
 		return c.JSON(http.StatusBadRequest, errorResponse)
 	}
 
-	res, err := h.Svc.Update(&req)
+	username := c.Get("username").(string)
+
+	res, err := h.Svc.Update(&req, username)
 	if err != nil {
 		fmt.Println("err", err)
 		return c.JSON(http.StatusBadRequest, err)
@@ -116,11 +120,7 @@ func (h *LocationHandler) Delete(c echo.Context) error {
 
 	idNumber, err := strconv.Atoi(id)
 	if err != nil {
-		return c.JSON(http.StatusBadRequest, response.ErrorResponse{
-			Success:   false,
-			Message:   "Failed converting id to int",
-			RequestID: "TEST",
-		})
+		return response.ErrorBadRequest(c, err, "Id is not valid")
 	}
 
 	res, err := h.Svc.Delete(idNumber)

@@ -65,4 +65,8 @@ func (r *RouteConfig) SetupAuthRoute() {
 	api.POST("/testimonial", r.TestimonialHandler.Create)
 	api.PATCH("/testimonial/slide", r.TestimonialHandler.UpdateSlide)
 	api.DELETE("/testimonial", r.TestimonialHandler.Delete)
+
+	api.PATCH("/user/picture", r.UserHandler.ChangeProfile)
+	api.PATCH("/user/information", r.UserHandler.Update)
+	api.GET("/user/information", r.UserHandler.Information)
 }

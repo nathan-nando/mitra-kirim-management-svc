@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"mitra-kirim-be-mgmt/internal/user/model"
@@ -13,6 +14,14 @@ type User struct {
 
 func NewUser(db *gorm.DB) *User {
 	return &User{Db: db}
+}
+
+func (r *User) FindByUserID(id string) (model.User, error) {
+	var user model.User
+	if err := r.Db.Where("id", id).Take(&user).Error; err != nil {
+		return user, err
+	}
+	return user, nil
 }
 
 func (r *User) FindByUsername(username string) (model.User, error) {
@@ -33,7 +42,6 @@ func (r *User) CreateUser(req *model.RegisterRequest) (model.User, error) {
 		Email:       req.Email,
 		Password:    req.Password,
 		Phone:       req.Phone,
-		Gender:      req.Gender,
 		Img:         req.Img,
 		Status:      1,
 		CreatedDate: time.Now(),
@@ -44,4 +52,37 @@ func (r *User) CreateUser(req *model.RegisterRequest) (model.User, error) {
 		return user, err
 	}
 	return user, nil
+}
+
+func (r *User) UpdateUser(update *model.UserUpdate, userID string, username string) (string, error) {
+	now := time.Now()
+	user := &model.User{
+		Name:        update.Name,
+		Username:    update.Username,
+		Password:    update.Password,
+		Title:       update.Title,
+		Email:       update.Email,
+		Phone:       update.Phone,
+		UpdatedBy:   username,
+		UpdatedDate: &now,
+	}
+	if err := r.Db.Model(&user).Where("id", userID).Updates(user).Error; err != nil {
+		fmt.Println("ERR", err)
+		return "", err
+	}
+	return user.ID, nil
+}
+
+func (r *User) UpdateUserImg(newImgName, username string) (string, error) {
+	now := time.Now()
+	user := &model.User{
+		Img:         newImgName,
+		UpdatedBy:   username,
+		UpdatedDate: &now,
+	}
+	if err := r.Db.Model(&user).Where("username", username).Updates(user).Error; err != nil {
+		fmt.Println("ERR", err)
+		return "", err
+	}
+	return user.ID, nil
 }
