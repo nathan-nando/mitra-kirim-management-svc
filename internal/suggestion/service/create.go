@@ -21,7 +21,7 @@ func (s *Suggestion) Create(request *model.SuggestionCreate) (string, error) {
 			&modelPub.PublisherEmail{
 				Name:    request.Name,
 				Email:   request.Email,
-				Message: "Hi, Terima kasih telah mengirimkan saran.",
+				Message: "Terimakasih telah mengirimkan saran. Tim kami akan segera menghubungi anda",
 			})
 	}()
 

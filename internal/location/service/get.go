@@ -9,20 +9,20 @@ import (
 )
 
 func (s *Location) GetAll(context context.Context, limit int, offset int) ([]model.Location, error) {
-	var results []model.Location
+	//var results []model.Location
 
-	dataJSON, err := s.Cache.LRange(context, contants.CacheLocations, 0, -1)
-	if err == nil && len(dataJSON) > 0 {
-		for _, itemJSON := range dataJSON {
-			var item model.Location
-			if err := json.Unmarshal([]byte(itemJSON), &item); err != nil {
-				return nil, err
-			}
-			results = append(results, item)
-		}
-		s.Logger.Info("locations CACHE")
-		return results, nil
-	}
+	//dataJSON, err := s.Cache.LRange(context, contants.CacheLocations, 0, -1)
+	//if err == nil && len(dataJSON) > 0 {
+	//	for _, itemJSON := range dataJSON {
+	//		var item model.Location
+	//		if err := json.Unmarshal([]byte(itemJSON), &item); err != nil {
+	//			return nil, err
+	//		}
+	//		results = append(results, item)
+	//	}
+	//	s.Logger.Info("locations CACHE")
+	//	return results, nil
+	//}
 
 	dataDB, err := s.Repo.FindAll(limit, offset)
 	if err != nil {

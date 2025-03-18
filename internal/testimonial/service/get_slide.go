@@ -7,14 +7,14 @@ import (
 )
 
 func (s *Testimonial) GetSlide(context context.Context, limit int, offset int) ([]string, error) {
-	list, err := s.CacheSvc.LRange(context, contants.CacheTestimonials, 0, -1)
-	if err == nil && len(list) > 0 {
-		s.Logger.Info("Testimonials CACHE")
-		return list, nil
-	}
-	if err != nil {
-		return []string{}, err
-	}
+	//list, err := s.CacheSvc.LRange(context, contants.CacheTestimonials, 0, -1)
+	//if err == nil && len(list) > 0 {
+	//	s.Logger.Info("Testimonials CACHE")
+	//	return list, nil
+	//}
+	//if err != nil {
+	//	return []string{}, err
+	//}
 
 	testimonials, err := s.Repository.GetSlide(limit, offset)
 	s.Logger.Info("Testimonials DB")

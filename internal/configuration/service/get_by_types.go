@@ -9,20 +9,20 @@ import (
 )
 
 func (s *Configuration) GetByTypes(context context.Context, types []string) ([]model.Configuration, error) {
-	var configs []model.Configuration
-
-	dataJSON, err := s.Cache.LRange(context, contants.CacheConfiguration, 0, -1)
-	if err == nil && len(dataJSON) > 0 {
-		for _, itemJSON := range dataJSON {
-			var item model.Configuration
-			if err = json.Unmarshal([]byte(itemJSON), &item); err != nil {
-				return nil, err
-			}
-			configs = append(configs, item)
-		}
-		s.Logger.Info("config CACHE")
-		return configs, nil
-	}
+	//var configs []model.Configuration
+	//
+	//dataJSON, err := s.Cache.LRange(context, contants.CacheConfiguration, 0, -1)
+	//if err == nil && len(dataJSON) > 0 {
+	//	for _, itemJSON := range dataJSON {
+	//		var item model.Configuration
+	//		if err = json.Unmarshal([]byte(itemJSON), &item); err != nil {
+	//			return nil, err
+	//		}
+	//		configs = append(configs, item)
+	//	}
+	//	s.Logger.Info("config CACHE")
+	//	return configs, nil
+	//}
 
 	dataDB, err := s.Repo.FindByTypes(types)
 	if err != nil {
