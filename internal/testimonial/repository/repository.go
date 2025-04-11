@@ -20,6 +20,12 @@ func (a *Testimonial) GetAll(offset int, limit int) ([]model.Testimonial, error)
 	return testimonials, err
 }
 
+func (a *Testimonial) CountAll() (int64, error) {
+	var count int64
+	err := a.Db.Model(&model.Testimonial{}).Count(&count).Error
+	return count, err
+}
+
 func (a *Testimonial) GetSlide(offset int, limit int) ([]model.Testimonial, error) {
 	var testimonials []model.Testimonial
 	err := a.Db.Where("is_carousel", 1).Find(&testimonials).Offset(offset).Limit(limit).Error

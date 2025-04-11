@@ -23,6 +23,14 @@ func (r *Suggestion) FindAll() ([]model.Suggestion, error) {
 	return result, nil
 }
 
+func (r *Suggestion) CountAll() (int64, error) {
+	var result int64
+	if err := r.Db.Model(&model.Suggestion{}).Count(&result).Error; err != nil {
+		return 0, err
+	}
+	return result, nil
+}
+
 func (r *Suggestion) FindByID(id string) (model.Suggestion, error) {
 	var result model.Suggestion
 	if err := r.Db.First(&result).Where("ID = ?", id).Error; err != nil {

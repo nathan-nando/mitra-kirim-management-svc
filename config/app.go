@@ -8,6 +8,7 @@ import (
 	"mitra-kirim-be-mgmt/http/rest/middleware"
 	configurationRepository "mitra-kirim-be-mgmt/internal/configuration/repository"
 	configurationService "mitra-kirim-be-mgmt/internal/configuration/service"
+	dashboardService "mitra-kirim-be-mgmt/internal/dashboard/service"
 	fileUploaderRepository "mitra-kirim-be-mgmt/internal/file-uploader/repository"
 	fileUploaderService "mitra-kirim-be-mgmt/internal/file-uploader/service"
 	locationRepository "mitra-kirim-be-mgmt/internal/location/repository"
@@ -56,9 +57,10 @@ func BuildInternal(appCfg *AppConfig) {
 	locationSvc := locationService.NewLocation(locationRepo, appCfg.Log, cache, cacheTime)
 	configSvc := configurationService.NewConfiguration(configRepo, fileUploaderSvc, appCfg.Log, cache, cacheTime)
 	userSvc := userService.NewUser(appCfg.Db, fileUploaderSvc, userRepo, appCfg.Config.JwtSigningKey, appCfg.Config.JwtTokenExp, appCfg.Config.JwtRefreshTokenExp)
+	dashboardSvc := dashboardService.NewDashboard(locationSvc, testimonialSvc, suggestionSvc, appCfg.Log)
 
 	userHandler := handler.NewUserHandler(userSvc, appCfg.Log)
-	//dashboardHandler := handler.NewDashboardHandler()
+	dashboardHandler := handler.NewDashboardHandler(dashboardSvc, appCfg.Log)
 	locationHandler := handler.NewLocationHandler(locationSvc, appCfg.Log)
 	testimonialHandler := handler.NewTestimonialHandler(testimonialSvc, appCfg.Log)
 	suggestionHandler := handler.NewSuggestionHandler(suggestionSvc, appCfg.Log)
@@ -73,6 +75,7 @@ func BuildInternal(appCfg *AppConfig) {
 		UserHandler:          userHandler,
 		TestimonialHandler:   testimonialHandler,
 		ConfigurationHandler: configurationHandler,
+		DashboardHandler:     dashboardHandler,
 		Middleware:           appMiddleware,
 	}
 

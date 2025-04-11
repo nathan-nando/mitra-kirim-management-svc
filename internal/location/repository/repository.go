@@ -25,6 +25,14 @@ func (r *Location) FindAll(limit int, offset int) ([]model.Location, error) {
 	return result, nil
 }
 
+func (r *Location) CountAll() (int64, error) {
+	var count int64
+
+	err := r.Db.Model(&model.Location{}).Count(&count).Error
+
+	return count, err
+}
+
 func (r *Location) Create(location *model.LocationRequest, username string) (int, error) {
 	loc := &model.Location{
 		Name:        location.Name,

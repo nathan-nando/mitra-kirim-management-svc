@@ -15,6 +15,7 @@ type RouteConfig struct {
 	LocationHandler      *handler.LocationHandler
 	ConfigurationHandler *handler.ConfigurationHandler
 	TestimonialHandler   *handler.TestimonialHandler
+	DashboardHandler     *handler.DashboardHandler
 	UserHandler          *handler.UserHandler
 	Middleware           *CustomMiddleware
 }
@@ -46,8 +47,10 @@ func (r *RouteConfig) SetupAuthRoute() {
 
 	api.Use(r.Middleware.DevMode())
 	api.Use(r.Middleware.AuthMiddleware())
-	api.GET("/suggestion", r.SuggestionHandler.List)
 
+	api.GET("/dashboard", r.DashboardHandler.Get)
+
+	api.GET("/suggestion", r.SuggestionHandler.List)
 	api.POST("/suggestion/reply", r.SuggestionHandler.ReplyEmail)
 
 	api.GET("/location", r.LocationHandler.List)
