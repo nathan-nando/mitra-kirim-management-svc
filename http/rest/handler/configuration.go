@@ -1,6 +1,8 @@
 package handler
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
 	"mime/multipart"
@@ -102,10 +104,6 @@ func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 func (h *ConfigurationHandler) UpdateHero(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	//if err := c.Request().ParseForm(); err != nil {
-	//	return response.ErrorBadRequest(c, err, "Parse Form Error")
-	//}
-
 	heroDesc := c.FormValue("heroDesc")
 	heroImg, err := c.FormFile("heroImg")
 	if err != nil {
@@ -121,6 +119,51 @@ func (h *ConfigurationHandler) UpdateHero(c echo.Context) error {
 	}
 
 	res, err := h.Svc.UpdateHero(ctx, req)
+	if err != nil {
+		h.Log.Error(err)
+		return response.ErrorInternal(c, err)
+	}
+
+	return response.SuccessOK(c, res)
+}
+func (h *ConfigurationHandler) UpdateServices(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	servicesJson := c.FormValue("services")
+
+	var services []model.ServicesLayout
+	if err := json.Unmarshal([]byte(servicesJson), &services); err != nil {
+		h.Log.Error(err)
+		return response.ErrorBadRequest(c, "Failed to parse services json")
+	}
+
+	for i := range services {
+		fileKey := fmt.Sprintf("serviceFile%d", i)
+
+		file, err := c.FormFile(fileKey)
+
+		if err != nil || file == nil {
+			continue
+		}
+
+		filename, err := h.Svc.SaveServiceImage(ctx, file)
+		if err != nil {
+			h.Log.Error(err)
+			return response.ErrorInternal(c, "Failed to save service file")
+		}
+
+		services[i].Img = filename
+	}
+
+	updatedServicesJson, err := json.Marshal(services)
+	if err != nil {
+		h.Log.Error(err)
+		return response.ErrorInternal(c, "Failed to parse updated services json")
+	}
+
+	payload := &model.UpdateServicesRequest{Services: string(updatedServicesJson)}
+
+	res, err := h.Svc.UpdateByKeys(ctx, payload)
 	if err != nil {
 		h.Log.Error(err)
 		return response.ErrorInternal(c, err)
