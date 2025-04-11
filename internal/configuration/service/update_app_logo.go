@@ -31,18 +31,3 @@ func (s *Configuration) UpdateLogoApp(context context.Context, req *model.Update
 
 	return keyVal, nil
 }
-
-func (s *Configuration) UpdateApp(context context.Context, req model.UpdateAppRequest) ([]converter.KeyValue, error) {
-	keyVal := converter.ConvertKeyValue(req)
-
-	err := s.Repo.UpdateByKey(keyVal)
-	if err != nil {
-		return nil, err
-	}
-
-	err = s.Cache.Del(context, contants.CacheConfiguration)
-	if err != nil {
-		return nil, err
-	}
-	return keyVal, nil
-}

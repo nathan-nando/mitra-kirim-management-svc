@@ -62,8 +62,7 @@ func (r *Configuration) UpdateByKey(keyVal []converter.KeyValue) error {
 			return result.Error
 		}
 		if result.RowsAffected == 0 {
-			fmt.Println("no rows affected")
-			return nil
+			return fmt.Errorf("no rows affected for key: %s", v.Key)
 		}
 	}
 

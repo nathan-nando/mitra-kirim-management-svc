@@ -78,23 +78,6 @@ func (h *ConfigurationHandler) PublicConfig(c echo.Context) error {
 		"testimonials": testimonials,
 	})
 }
-
-func (h *ConfigurationHandler) UpdateApp(c echo.Context) error {
-	ctx := c.Request().Context()
-	var req model.UpdateAppRequest
-	if err := c.Bind(&req); err != nil {
-		c.Logger().Error("failed to parse request body")
-		return response.ErrorBadRequest(c, err, "Validation error")
-	}
-
-	res, err := h.Svc.UpdateApp(ctx, req)
-	if err != nil {
-		h.Log.Error(err)
-		return response.ErrorInternal(c, err)
-	}
-
-	return response.SuccessOK(c, res)
-}
 func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 	ctx := c.Request().Context()
 	appLogo, err := c.FormFile("appLogo")
@@ -115,34 +98,16 @@ func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 
 	return response.SuccessOK(c, res)
 }
-func (h *ConfigurationHandler) UpdateSocial(c echo.Context) error {
+func (h *ConfigurationHandler) UpdateConfiguration(c echo.Context) error {
 	ctx := c.Request().Context()
 
-	var req model.UpdateSocialRequest
+	var req model.UpdateConfigurationRequest
 	if err := c.Bind(&req); err != nil {
 		c.Logger().Error("failed to parse request body")
 		return response.ErrorBadRequest(c, err, "Validation error")
 	}
 
-	res, err := h.Svc.UpdateSocial(ctx, req)
-
-	if err != nil {
-		h.Log.Error(err)
-		return response.ErrorInternal(c, err)
-	}
-
-	return response.SuccessOK(c, res)
-}
-func (h *ConfigurationHandler) UpdateToko(c echo.Context) error {
-	ctx := c.Request().Context()
-
-	var req model.UpdateTokoRequest
-	if err := c.Bind(&req); err != nil {
-		c.Logger().Error("failed to parse request body")
-		return response.ErrorBadRequest(c, err, "Validation error")
-	}
-
-	res, err := h.Svc.UpdateToko(ctx, req)
+	res, err := h.Svc.UpdateByKeys(ctx, req)
 	if err != nil {
 		h.Log.Error(err)
 		return response.ErrorInternal(c, err)
