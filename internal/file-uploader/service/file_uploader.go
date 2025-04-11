@@ -17,6 +17,10 @@ func NewFileUploader(fileUploader *repository.FileUploader, logger *logrus.Logge
 }
 
 func (s *FileUploader) UploadFile(fileHeader *multipart.FileHeader, dir string) (string, error) {
+	if fileHeader.Size == 0 {
+		return fileHeader.Filename, nil
+	}
+	
 	src, err := fileHeader.Open()
 	if err != nil {
 		return "", fmt.Errorf("error opening file: %w", err)

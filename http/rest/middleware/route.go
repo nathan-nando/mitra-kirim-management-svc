@@ -57,8 +57,9 @@ func (r *RouteConfig) SetupAuthRoute() {
 
 	api.POST("/configuration/type", r.ConfigurationHandler.ListByTypes)
 	api.PATCH("/configuration", r.ConfigurationHandler.UpdateConfiguration)
-	api.PATCH("/configuration/layout", r.ConfigurationHandler.UpdateAppLogo)
 	api.PATCH("/configuration/appLogo", r.ConfigurationHandler.UpdateAppLogo)
+	api.PATCH("/configuration/hero", r.ConfigurationHandler.UpdateHero)
+	//api.PATCH("/configuration/service", r.ConfigurationHandler.UpdateAppLogo)
 
 	api.GET("/testimonial", r.TestimonialHandler.List)
 	api.POST("/testimonial", r.TestimonialHandler.Create)

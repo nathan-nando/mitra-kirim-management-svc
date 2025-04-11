@@ -3,9 +3,11 @@ package model
 import "mime/multipart"
 
 type UpdateHeroLogoRequest struct {
-	HeroLogo *multipart.FileHeader `json:"heroLogo"`
+	HeroDesc string                `json:"heroDesc"`
+	HeroImg  *multipart.FileHeader `json:"heroImg"`
 }
 
-type UpdateHeroLogoFileName struct {
-	HeroLogo string `json:"heroLogo"`
+type UpdateHeroKeyVal struct {
+	HeroImg  string `json:"heroImg"`
+	HeroDesc string `json:"heroDesc"`
 }

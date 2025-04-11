@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/labstack/echo/v4"
 	"github.com/sirupsen/logrus"
+	"mime/multipart"
 	"mitra-kirim-be-mgmt/internal/configuration/model"
 	"mitra-kirim-be-mgmt/internal/configuration/service"
 	locationService "mitra-kirim-be-mgmt/internal/location/service"
@@ -91,6 +92,35 @@ func (h *ConfigurationHandler) UpdateAppLogo(c echo.Context) error {
 	}
 
 	res, err := h.Svc.UpdateLogoApp(ctx, &req)
+	if err != nil {
+		h.Log.Error(err)
+		return response.ErrorInternal(c, err)
+	}
+
+	return response.SuccessOK(c, res)
+}
+func (h *ConfigurationHandler) UpdateHero(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	//if err := c.Request().ParseForm(); err != nil {
+	//	return response.ErrorBadRequest(c, err, "Parse Form Error")
+	//}
+
+	heroDesc := c.FormValue("heroDesc")
+	heroImg, err := c.FormFile("heroImg")
+	if err != nil {
+		h.Log.Error(err)
+		heroImg = &multipart.FileHeader{
+			Filename: "",
+			Size:     0,
+		}
+	}
+	req := &model.UpdateHeroLogoRequest{
+		HeroDesc: heroDesc,
+		HeroImg:  heroImg,
+	}
+
+	res, err := h.Svc.UpdateHero(ctx, req)
 	if err != nil {
 		h.Log.Error(err)
 		return response.ErrorInternal(c, err)
